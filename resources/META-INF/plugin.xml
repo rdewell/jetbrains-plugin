@@ -1,0 +1,27 @@
+<idea-plugin>
+  <!-- Unique identifier of the plugin.
+      Cannot be changed between the plugin versions. -->
+  <id>Stacklane</id>
+
+  <name>Stacklane</name>
+
+  <version>1.0.2</version>
+
+  <vendor email="plugin@stacklane.com" url="https://stacklane.com">Stacklane, Inc.</vendor>
+
+  <description><![CDATA[
+      Stacklane is the automatically scalable platform
+      for microservices, smart data models, and the RESTful web.
+      The Stacklane WebStorm plugin syncs project files for online testing.
+    ]]></description>
+
+  <idea-version since-build="WS-172"/> <!-- targeting webstorm only -->
+
+ <!-- <depends>com.intellij.modules.lang</depends>-->
+  <depends>com.intellij.modules.platform</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+      <configurationType implementation="io.stacklane.jetbrains.SLRunConfigType" />
+      <runConfigurationProducer implementation="io.stacklane.jetbrains.SLRunConfigProducer" />
+  </extensions>
+</idea-plugin>
