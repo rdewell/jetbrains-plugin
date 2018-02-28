@@ -5,13 +5,17 @@
 
   <name>Stacklane</name>
 
-  <version>1.0.3</version>
+  <version>1.0.4</version>
 
   <vendor email="plugin@stacklane.com" url="https://stacklane.com">Stacklane, Inc.</vendor>
 
   <description><![CDATA[
-      Stacklane is the automatically scalable platform
-      for microservices, smart data models, and the RESTful web.
+      Stacklane is the automatically
+      scalable platform for
+      serverless web apps,
+      smart data models,
+      and rapid results.
+
       The Stacklane WebStorm plugin syncs project files for online testing.
     ]]></description>
 

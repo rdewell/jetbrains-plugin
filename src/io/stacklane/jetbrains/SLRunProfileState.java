@@ -12,17 +12,22 @@ import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ExecutionConsole;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.project.Project;
+import mjson.Json;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /**
  *
  */
 public class SLRunProfileState implements RunProfileState {
     private final Project project;
+    private final Optional<Json>  buildProps;
 
-    public SLRunProfileState(Project project) {
+    public SLRunProfileState(Project project, Optional<Json> buildProps) {
         this.project = project;
+        this.buildProps = buildProps;
     }
 
     /**
@@ -33,7 +38,7 @@ public class SLRunProfileState implements RunProfileState {
     public ExecutionResult execute(Executor executor, @NotNull ProgramRunner programRunner) throws ExecutionException {
         final ConsoleView cv = TextConsoleBuilderFactory.getInstance().createBuilder(project).getConsole();
 
-        final SLRunProcessHandler processStarted = new SLRunProcessHandler(project, cv);
+        final SLRunProcessHandler processStarted = new SLRunProcessHandler(project, cv, buildProps);
 
         return new ExecutionResult() {
             @Override

@@ -36,8 +36,18 @@ public class SLRunConfigProducer extends RunConfigurationProducer<SLRunConfig> {
         return true;
     }
 
+    /**
+     * Look at both of the sources mentioned in the above method.
+     * They primarily appear to be checking for configurations, not naming.
+     * Therefore we do the same.
+     * E.G. whether anything has been configured beyond what we consider "default".
+     */
     @Override
     public boolean isConfigurationFromContext(SLRunConfig slRunConfig, ConfigurationContext configurationContext) {
-        return !slRunConfig.isCustomConfig();
+        if (slRunConfig.getBuildProps() != null && !slRunConfig.getBuildProps().isEmpty()){
+            return false;
+        }
+
+        return true;
     }
 }

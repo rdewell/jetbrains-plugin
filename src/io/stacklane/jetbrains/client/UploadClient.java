@@ -78,7 +78,7 @@ public class UploadClient {
      * @return The {@link URI} to open in a browser.
      * @throws Exception
      */
-    public URI build(UploadConsole console) throws Exception{
+    public URI build(UploadConsole console, Optional<Json> buildProps) throws Exception{
         console.info("Starting build process");
 
         final HttpPost post = new HttpPost();
@@ -90,6 +90,11 @@ public class UploadClient {
         // And last line of a successful build will start with HTTP
         post.setHeader("Accept", "text/plain");
         post.setURI(getEndpoint());
+
+        if (buildProps.isPresent()){
+            post.setHeader("Content-Type", "application/json; charset=UTF-8");
+            post.setEntity(new StringEntity(buildProps.get().toString()));
+        }
 
         try {
             HttpResponse response = CLIENT.execute(post);
@@ -123,11 +128,35 @@ public class UploadClient {
                 String lastLine = null;
 
                 while ((currentLine = in.readLine()) != null) {
-                    console.info(currentLine);
+                    if (currentLine.startsWith("https://")){
+                        // no need to state this because last logging message from server is ~ "preparing test domain"
+                        //console.info("Checking test domain");
+
+                        // also note that we do not emit the URI in the console, leaving that for caller of this method
+
+                        /**
+                         * This step ensures that test domain is loaded and ready geographically close to user.
+                         * But it could actually end up hitting a different server.
+                         *
+                         * TODO but better would be to also scrape the CSS/JS/IMAGES and load as well, so they
+                         *  are geographically close CDN.
+                         *  or use a library that is aware of these when loading the page.
+                         */
+                        final HttpGet get = new HttpGet(URI.create(currentLine));
+
+                        try {
+                            CLIENT.execute(get);
+                        } finally{
+                            get.releaseConnection();
+                        }
+                    } else {
+                        console.info(currentLine);
+                    }
+
                     lastLine = currentLine;
                 }
 
-                if (lastLine != null && lastLine.startsWith("http")){
+                if (lastLine != null && lastLine.startsWith("https")){
                     return URI.create(lastLine);
                 } else {
                     console.error("Build failed -- no test URL received");

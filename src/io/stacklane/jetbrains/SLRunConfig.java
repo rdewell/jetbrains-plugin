@@ -2,20 +2,28 @@ package io.stacklane.jetbrains;
 
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
+import com.intellij.execution.RunConfigurationExtension;
+import com.intellij.execution.application.ApplicationConfiguration;
 import com.intellij.execution.configurations.*;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.InvalidDataException;
+import com.intellij.openapi.util.JDOMExternalizer;
 import com.intellij.openapi.util.WriteExternalException;
+import com.intellij.util.containers.SLRUCache;
+import mjson.Json;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.Optional;
 
 /**
+ * TODO this contains secure info not to be shared -- how we can disable the 'share' checkbox?
+ *
  * Note that, in order to support automatic naming of configurations created from context,
  * your configuration should use LocatableConfigurationBase as the base class.
  *
@@ -30,6 +38,16 @@ import javax.swing.*;
  */
 public class SLRunConfig extends LocatableConfigurationBase {
     private String myGeneratedName = null;
+
+    public String getBuildProps() {
+        return buildProps;
+    }
+
+    public void setBuildProps(String buildProps) {
+        this.buildProps = buildProps;
+    }
+
+    private String buildProps = null;
 
     static final String UNNAMED = "Unnamed";
 
@@ -48,13 +66,6 @@ public class SLRunConfig extends LocatableConfigurationBase {
         return generatedName;
     }
 
-    /*
-    public String resetGeneratedName() {
-        String name = generateName();
-        myGeneratedName = name;
-        return name;
-    }*/
-
     @NotNull
     private String generateName(){
         return SLPluginUtil.readManifestName(this.getProject()).orElse(UNNAMED);
@@ -63,24 +74,7 @@ public class SLRunConfig extends LocatableConfigurationBase {
     @NotNull
     @Override
     public SettingsEditor<? extends RunConfiguration> getConfigurationEditor() {
-        // TODO ?
-        return new SettingsEditor<RunConfiguration>() {
-            @Override
-            protected void resetEditorFrom(@NotNull RunConfiguration runConfiguration) {
-
-            }
-
-            @Override
-            protected void applyEditorTo(@NotNull RunConfiguration runConfiguration) throws ConfigurationException {
-
-            }
-
-            @NotNull
-            @Override
-            protected JComponent createEditor() {
-                return new JLabel("Ready");
-            }
-        };
+        return new SLRunConfigEditor(getProject());
     }
 
     /**
@@ -95,22 +89,55 @@ public class SLRunConfig extends LocatableConfigurationBase {
     @Nullable
     @Override
     public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment executionEnvironment) throws ExecutionException {
-        return new SLRunProfileState(executionEnvironment.getProject());
+        Optional<Json> json = Optional.empty();
+
+        if (buildProps != null && !buildProps.isEmpty()){
+            try {
+                Json read = Json.read(buildProps);
+                json = Optional.of(read);
+            } catch (Throwable t){
+                throw new ExecutionException("Invalid JSON build properties.");
+            }
+        }
+
+        return new SLRunProfileState(executionEnvironment.getProject(), json);
     }
 
     @Override
     public void readExternal(Element element) throws InvalidDataException {
         super.readExternal(element);
+        this.buildProps = readString(element, "buildProps", "");
+        if (this.buildProps.isEmpty()) buildProps = null;
+    }
 
+    @Override
+    public void checkSettingsBeforeRun() throws RuntimeConfigurationException {
+        if (buildProps != null && !buildProps.isEmpty()){
+            try {
+                Json.read(buildProps);
+            } catch (Throwable t){
+                throw new RuntimeConfigurationException("Invalid JSON build properties.");
+            }
+        }
     }
 
     @Override
     public void writeExternal(@NotNull Element element) throws WriteExternalException {
         super.writeExternal(element);
-
+        writeString(element, "buildProps", buildProps == null ? "" : buildProps);
     }
 
-    public boolean isCustomConfig() {
-        return UNNAMED.equals(getName()) || !getName().equals(suggestedName()) || !isGeneratedName();
+    //public boolean isCustomConfig() {
+     //   return UNNAMED.equals(getName()) || !getName().equals(suggestedName()) || !isGeneratedName() || buildProps != null;
+    //}
+
+    private static String readString(@NotNull Element element, @NotNull String key, @NotNull String defaultValue) {
+        String value = JDOMExternalizer.readString(element, key);
+        return value != null ? value : defaultValue;
     }
+
+    private static void writeString(@NotNull Element element, @NotNull String key, @NotNull String value) {
+        JDOMExternalizer.write(element, key, value);
+    }
+
 }

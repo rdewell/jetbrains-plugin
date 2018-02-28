@@ -10,6 +10,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import io.stacklane.jetbrains.client.UploadClient;
 import io.stacklane.jetbrains.client.UploadClientSettings;
+import mjson.Json;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -24,10 +25,12 @@ import java.util.concurrent.CompletableFuture;
 public class SLRunProcessHandler extends ProcessHandler {
     private final ConsoleView cv;
     private final Project project;
+    private final Optional<Json> buildProps;
 
-    public SLRunProcessHandler(Project project, ConsoleView cv) {
+    public SLRunProcessHandler(Project project, ConsoleView cv, Optional<Json> buildProps) {
         this.cv = cv;
         this.project = project;
+        this.buildProps = buildProps;
     }
 
     /**
@@ -108,9 +111,10 @@ public class SLRunProcessHandler extends ProcessHandler {
 
                     if (!isStopped()) {
                         try {
-                            final URI uri = projectClient.build(wrapper);
+                            final URI uri = projectClient.build(wrapper, buildProps);
 
                             if (!isStopped()) {
+                                wrapper.info(uri.toString());
                                 BrowserUtil.browse(uri);
                             }
                         } catch (Throwable t) {
