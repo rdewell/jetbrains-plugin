@@ -93,7 +93,7 @@ public class UploadClient {
 
         if (buildProps.isPresent()){
             post.setHeader("Content-Type", "application/json; charset=UTF-8");
-            post.setEntity(new StringEntity(buildProps.get().toString()));
+            post.setEntity(new StringEntity(buildProps.get().toString(), StandardCharsets.UTF_8));
         }
 
         try {
