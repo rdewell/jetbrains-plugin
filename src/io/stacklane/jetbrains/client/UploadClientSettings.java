@@ -17,7 +17,7 @@ public final class UploadClientSettings {
     public static final String ENDPOINT = "https://api.execute.website";
 
     public static final int MAX_FILES = 500;
-    public static final int MAX_BYTES = 10000000;
+    public static final int MAX_BYTES = 5000000;
 
     public static final String MANIFEST_FILE_NAME = "🎛.yaml";
 
