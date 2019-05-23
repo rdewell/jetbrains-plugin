@@ -3,7 +3,7 @@ plugins {
     id 'org.jetbrains.intellij' version '0.4.8'
 }
 
-group 'com.slacklane'
+group 'com.stacklane'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
