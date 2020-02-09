@@ -1,0 +1,24 @@
+
+plugins {
+    //id 'java'
+    id 'org.jetbrains.intellij' version '0.4.16'
+}
+
+// Note: final dist is concat of settings.grade/rootProject.name and version below
+
+group 'com.stacklane'
+version '1.0.6' // see plugin.xml
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+intellij {
+    type = 'IU'
+    pluginName 'Stacklane'
+}
