@@ -98,14 +98,9 @@ public class SLRunProcessHandler extends ProcessHandler {
                     return;
                 }
 
-                /**
-                 * TODO we should probably be using {@link VirtualFile}
-                 */
-                final Path source = new File(project.getBasePath()).toPath();
-
                 final BuildOutputConsoleView output = new BuildOutputConsoleView(cv, project);
 
-                final UploadClient projectClient = UploadClient.anon(source);
+                final UploadClient projectClient = UploadClient.anon(project);
 
                 try {
                     if (!isStopped()) {

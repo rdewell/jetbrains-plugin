@@ -1,5 +1,6 @@
 package io.stacklane.jetbrains.client;
 
+import com.intellij.openapi.project.Project;
 import io.stacklane.jetbrains.output.BuildOutputConsole;
 import io.stacklane.jetbrains.output.BuildOutputEntry;
 import io.stacklane.jetbrains.output.BuildOutputEntryType;
@@ -40,7 +41,12 @@ public class UploadClient {
 
     private static final HttpClient CLIENT = HttpClients.custom().disableRedirectHandling().build();
 
-    public static UploadClient anon(Path projectPath){
+    public static UploadClient anon(Project project){
+        /**
+         * TODO we should be using {@link VirtualFile} instead  -- see {@link io.stacklane.jetbrains.VFSUtil}
+         */
+        final Path projectPath = new File(project.getBasePath()).toPath();
+
         return new UploadClient(Optional.empty(), projectPath);
     }
 
