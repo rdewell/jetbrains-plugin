@@ -18,16 +18,7 @@ class SLRunConfigFactory extends ConfigurationFactory {
     @NotNull
     @Override
     public RunConfiguration createTemplateConfiguration(@NotNull Project project) {
-        final SLRunConfig s = new SLRunConfig(project, this, SLPluginUtil.SL_RUNNER);
-        return s;
-    }
-
-    /**
-     * Corresponds to initial state of the checkbox "Single instance only".
-     */
-    @Override
-    public boolean isConfigurationSingletonByDefault() {
-        return true;
+        return new SLRunConfig(project, this, SLPluginUtil.SL_RUNNER);
     }
 
     /**
