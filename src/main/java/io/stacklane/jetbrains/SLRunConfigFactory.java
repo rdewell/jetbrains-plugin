@@ -2,6 +2,7 @@ package io.stacklane.jetbrains;
 
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.RunConfiguration;
+import com.intellij.execution.configurations.RunConfigurationSingletonPolicy;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,10 +34,8 @@ class SLRunConfigFactory extends ConfigurationFactory {
      * Corresponds to the checkbox "Single instance only".
      */
     @Override
-    public boolean canConfigurationBeSingleton() {
-        // this was false while other singleton setting above was true, in
-        // https://github.com/JetBrains/intellij-plugins/blob/master/JsTestDriver/src/com/google/jstestdriver/idea/execution/JstdConfigurationType.java
-        return false;
+    public RunConfigurationSingletonPolicy getSingletonPolicy() {
+        return RunConfigurationSingletonPolicy.SINGLE_INSTANCE_ONLY;
     }
 
 }
