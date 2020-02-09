@@ -1,0 +1,29 @@
+<idea-plugin>
+    <id>Stacklane</id>
+
+    <name>Stacklane</name>
+
+    <version>1.0.6</version>
+
+    <vendor email="plugin@stacklane.com" url="https://stacklane.com">Stacklane, Inc.</vendor>
+
+    <description><![CDATA[
+      Stacklane is the automatically
+      scalable platform for
+      serverless web apps,
+      smart data models,
+      and rapid results.
+
+      The Stacklane WebStorm plugin syncs project files for online testing.
+    ]]></description>
+
+    <idea-version since-build="*"/>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- <iconProvider implementation=".. ?" order="first"/> -->
+        <configurationType implementation="io.stacklane.jetbrains.SLRunConfigType" />
+        <runConfigurationProducer implementation="io.stacklane.jetbrains.SLRunConfigProducer" />
+    </extensions>
+</idea-plugin>
