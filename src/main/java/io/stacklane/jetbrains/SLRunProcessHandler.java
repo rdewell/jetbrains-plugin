@@ -10,12 +10,14 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import io.stacklane.jetbrains.client.UploadClient;
 import io.stacklane.jetbrains.client.UploadClientSettings;
+import io.stacklane.jetbrains.output.BuildOutputConsoleView;
 import mjson.Json;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.OutputStream;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -89,32 +91,35 @@ public class SLRunProcessHandler extends ProcessHandler {
                 final Optional<String> manifestName = SLPluginUtil.readManifestName(project);
 
                 if (!manifestName.isPresent()){
-                    cv.print("A manifest file (" + UploadClientSettings.MANIFEST_FILE_NAME + ") is required, and it must have the 'name' attribute.",
+                    cv.print("A manifest file (" + UploadClientSettings.MANIFEST_FILE_NAME + ") " +
+                                    "is required, and it must have the 'name' attribute.",
                             ConsoleViewContentType.ERROR_OUTPUT);
                     notifyTerminated();
                     return;
                 }
 
-                final ConsoleWrapper wrapper = new ConsoleWrapper(cv);
+                final Path source = new File(project.getBasePath()).toPath();
 
-                final UploadClient projectClient = UploadClient.anon( new File(project.getBasePath()).toPath() );
+                final BuildOutputConsoleView output = new BuildOutputConsoleView(cv, source);
+
+                final UploadClient projectClient = UploadClient.anon(source);
 
                 try {
                     if (!isStopped()) {
                         try {
-                            projectClient.putIncrementally(wrapper);
+                            projectClient.putIncrementally(output);
                         } catch (Throwable t) {
-                            wrapper.error("Error syncing files", t);
+                            output.error("Error syncing files", t);
                             return;
                         }
                     }
 
                     if (!isStopped()) {
                         try {
-                            final URI uri = projectClient.build(wrapper, buildProps);
+                            final URI uri = projectClient.build(output, buildProps);
 
                             if (!isStopped()) {
-                                wrapper.info(uri.toString());
+                                // TODO auto-browse to URL should probably be a preference
                                 BrowserUtil.browse(uri);
                             }
                         } catch (Throwable t) {

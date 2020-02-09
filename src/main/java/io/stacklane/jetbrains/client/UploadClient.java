@@ -1,13 +1,13 @@
 package io.stacklane.jetbrains.client;
 
+import io.stacklane.jetbrains.output.BuildOutputConsole;
+import io.stacklane.jetbrains.output.BuildOutputEntry;
+import io.stacklane.jetbrains.output.BuildOutputEntryType;
 import mjson.Json;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPatch;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.*;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
@@ -78,17 +78,13 @@ public class UploadClient {
      * @return The {@link URI} to open in a browser.
      * @throws Exception
      */
-    public URI build(UploadConsole console, Optional<Json> buildProps) throws Exception{
-        console.info("Starting build process");
+    public URI build(BuildOutputConsole console, Optional<Json> buildProps) throws Exception{
+        console.entry(BuildOutputEntry.info("Starting build process"));
 
         final HttpPost post = new HttpPost();
 
         post.setHeader("Authorization", auth);
-
-        // Indicates that we want simplest output of build process.
-        // text/plain is essentially one console output per line.
-        // And last line of a successful build will start with HTTP
-        post.setHeader("Accept", "text/plain");
+        post.setHeader("Accept", "application/json"); // Use JSON build output option
         post.setURI(getEndpoint());
 
         if (buildProps.isPresent()){
@@ -119,59 +115,55 @@ public class UploadClient {
                 throw new UploadStatusException(response);
             }
 
-            InputStream is = null;
-
-            try {
-                is = response.getEntity().getContent();
-                BufferedReader in = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+            try (final InputStream is = response.getEntity().getContent()){
+                final BufferedReader in = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
                 String currentLine = null;
-                String lastLine = null;
+                URI success = null;
+                BuildOutputEntry entry = null;
 
                 while ((currentLine = in.readLine()) != null) {
-                    if (currentLine.startsWith("https://")){
-                        // no need to state this because last logging message from server is ~ "preparing test domain"
-                        //console.info("Checking test domain");
+                    entry = BuildOutputEntry.parse(currentLine);
+                    console.entry(entry);
 
-                        // also note that we do not emit the URI in the console, leaving that for caller of this method
-
-                        /**
-                         * This step ensures that test domain is loaded and ready geographically close to user.
-                         * But it could actually end up hitting a different server.
-                         *
-                         * TODO but better would be to also scrape the CSS/JS/IMAGES and load as well, so they
-                         *  are geographically close CDN.
-                         *  or use a library that is aware of these when loading the page.
-                         */
-                        final HttpGet get = new HttpGet(URI.create(currentLine));
-
-                        try {
-                            CLIENT.execute(get);
-                        } finally{
-                            get.releaseConnection();
-                        }
-                    } else {
-                        console.info(currentLine);
+                    if (entry.getType() == BuildOutputEntryType.RESULT) {
+                        hitURL(entry.getResult());
+                        success = entry.getResult();
                     }
-
-                    lastLine = currentLine;
                 }
 
-                if (lastLine != null && lastLine.startsWith("https")){
-                    return URI.create(lastLine);
-                } else {
-                    console.error("Build failed -- no test URL received");
+                if (success == null){
+                    // Only emit this if last entry was not an ERROR:
+                    console.error("Build failed");
                     throw new Exception();
                 }
-            } finally {
-                try {
-                    is.close();
-                } catch (Throwable ignore){}
+
+                return success;
             }
         } catch (IOException io){
             console.error("Build API error", io);
             throw io;
         } finally {
             post.releaseConnection();
+        }
+    }
+
+    private static void hitURL(URI url){
+        /**
+         * This step ensures that test domain is loaded and ready geographically close to user.
+         * But it could actually end up hitting a different server.
+         *
+         * TODO but better would be to also scrape the CSS/JS/IMAGES and load as well, so they
+         *  are at a geographically close CDN.
+         *  or use a library that is aware of these when loading the page.
+         */
+        final HttpGet get = new HttpGet(url);
+
+        try {
+            CLIENT.execute(get);
+        } catch (Throwable ignoreOptionalOperation){
+
+        } finally{
+            get.releaseConnection();
         }
     }
 
@@ -205,13 +197,12 @@ public class UploadClient {
             } catch (Throwable ignore){};
 
         }
-
     }
 
     /**
      * This will fallback to {@link #putAll}} if the project doesn't exist.
      */
-    public void putIncrementally(UploadConsole console) throws IOException, UploadStatusException {
+    public void putIncrementally(BuildOutputConsole console) throws IOException, UploadStatusException {
         Json manifest = null;
 
         console.info("Checking for files to sync");
@@ -324,43 +315,10 @@ public class UploadClient {
         patch.setHeader("Accept", "application/json");
         patch.setURI(getEndpoint());
 
-        Path zipped = null;
-
-        try {
-
-            zipped = UploadUtil.zip(source, shouldUpdate);
-
-            InputStreamEntity isEntity = new InputStreamEntity(new FileInputStream(zipped.toFile()));
-
-            patch.setEntity(isEntity);
-
-            final HttpResponse response = CLIENT.execute(patch);
-
-            if (response.getStatusLine().getStatusCode() == 200){
-
-                return;
-
-            } else {
-
-                throw new UploadStatusException(response);
-
-            }
-        } finally {
-
-            try {
-                zipped.toFile().delete();
-            } catch (Throwable ignore){}
-
-            try {
-                patch.releaseConnection();
-            } catch (Throwable ignore){};
-
-        }
-
+        uploadFiles(patch, shouldUpdate, console);
     }
 
-    public void putAll(UploadConsole console) throws IOException, UploadStatusException {
-
+    public void putAll(BuildOutputConsole console) throws IOException, UploadStatusException {
         final HttpPut put = new HttpPut();
 
         put.setHeader("Authorization", auth);
@@ -368,17 +326,20 @@ public class UploadClient {
         put.setHeader("Accept", "application/json");
         put.setURI(getEndpoint());
 
-        Path zipped = null;
-
         final Predicate<Path> all = path -> true;
 
         final long toUpdate = UploadUtil.getZippableFileTotal(source, all);
-
         console.info("Syncing all " + toUpdate + " file" + ((toUpdate > 1) ? "s" : "")  );
+
+        uploadFiles(put, all, console);
+    }
+
+    private void uploadFiles(HttpEntityEnclosingRequestBase put, Predicate<Path> filePaths, BuildOutputConsole console) throws IOException, UploadStatusException {
+        Path zipped = null;
 
         try {
 
-            zipped = UploadUtil.zip(source, all);
+            zipped = UploadUtil.zip(source, filePaths);
 
             InputStreamEntity isEntity = new InputStreamEntity(new FileInputStream(zipped.toFile()));
 
@@ -414,5 +375,4 @@ public class UploadClient {
 
         }
     }
-
 }
