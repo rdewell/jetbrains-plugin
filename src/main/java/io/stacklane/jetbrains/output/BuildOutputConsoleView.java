@@ -1,27 +1,13 @@
 package io.stacklane.jetbrains.output;
 
-import com.intellij.execution.filters.HyperlinkInfo;
 import com.intellij.execution.filters.HyperlinkWithPopupMenuInfo;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.ide.BrowserUtil;
-import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.search.FilenameIndex;
-import com.intellij.psi.search.GlobalSearchScope;
 import io.stacklane.jetbrains.VFSUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.awt.event.MouseEvent;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Adapts {@link ConsoleView}
