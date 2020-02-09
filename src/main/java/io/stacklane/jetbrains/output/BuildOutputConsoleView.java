@@ -1,21 +1,38 @@
 package io.stacklane.jetbrains.output;
 
+import com.intellij.execution.filters.HyperlinkInfo;
+import com.intellij.execution.filters.HyperlinkWithPopupMenuInfo;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.ide.BrowserUtil;
+import com.intellij.openapi.actionSystem.ActionGroup;
+import com.intellij.openapi.fileEditor.OpenFileDescriptor;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.vfs.VfsUtilCore;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.search.FilenameIndex;
+import com.intellij.psi.search.GlobalSearchScope;
+import io.stacklane.jetbrains.VFSUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.awt.event.MouseEvent;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Adapts {@link ConsoleView}
  */
 public class BuildOutputConsoleView implements BuildOutputConsole {
     private final ConsoleView cv;
-    private final Path source;
+    private final Project project;
 
-    public BuildOutputConsoleView(ConsoleView cv, Path source) {
+    public BuildOutputConsoleView(ConsoleView cv, Project project) {
         this.cv = cv;
-        this.source = source;
+        this.project = project;
     }
 
     @Override
@@ -69,14 +86,27 @@ public class BuildOutputConsoleView implements BuildOutputConsole {
                  */
 
                 if (entry.getFilePath() != null){
-                    // TODO if we can find this in source, let's make it a hyper link -- but need to know correct way to open a file from plugin
-                    cv.print(entry.getFilePath(), contentType);
+                    final VirtualFile found = VFSUtil.find(project, entry.getFilePath());
+
+                    if (found != null){
+                        /**
+                         * TODO note that {@link OpenFileDescriptor} can accept offset  / line number
+                         *
+                         * TODO maybe displaying the full path is too much
+                         */
+                        cv.printHyperlink(entry.getFilePath(), project -> new OpenFileDescriptor(project, found).navigate(true));
+                    } else {
+                        cv.print(entry.getFilePath(), contentType);
+                    }
+
                     cv.print(" ", contentType);
                 }
 
                 if (entry.getMessage() != null) cv.print(entry.getMessage(), contentType);
 
-                // TODO if there is source code, then display in a popup after clicking hyperlink?
+                /**
+                 * TODO see {@link HyperlinkWithPopupMenuInfo}
+                 */
 
                 cv.print("\n", contentType);
 

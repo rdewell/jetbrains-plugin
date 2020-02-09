@@ -2,14 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8b905902-7fc5-4d6e-a1f8-c247b7b9303d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/io/stacklane/jetbrains/output/BuildOutputEntry.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/io/stacklane/jetbrains/output/BuildOutputEntryType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/io/stacklane/jetbrains/VFSUtil.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/stacklane/jetbrains/ConsoleWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/stacklane/jetbrains/output/BuildOutputConsoleView.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/io/stacklane/jetbrains/SLRunProcessHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/stacklane/jetbrains/SLRunProcessHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/stacklane/jetbrains/client/UploadClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/stacklane/jetbrains/client/UploadClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/stacklane/jetbrains/client/UploadConsole.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/stacklane/jetbrains/output/BuildOutputConsole.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/stacklane/jetbrains/output/BuildOutputConsoleView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/stacklane/jetbrains/output/BuildOutputConsoleView.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,8 +51,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Enum" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -159,7 +155,7 @@
       <workItem from="1581256302731" duration="886000" />
       <workItem from="1581259145659" duration="141000" />
       <workItem from="1581269719052" duration="21000" />
-      <workItem from="1581270284285" duration="5107000" />
+      <workItem from="1581270284285" duration="7679000" />
     </task>
     <task id="LOCAL-00001" summary="Use Gradle https://github.com/stacklane-registry/jetbrains-ide/issues/5">
       <created>1581270828623</created>
@@ -203,7 +199,14 @@
       <option name="project" value="LOCAL" />
       <updated>1581271289593</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Use JSON build output format https://github.com/stacklane-registry/jetbrains-ide/issues/4">
+      <created>1581275449122</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1581275449122</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -217,7 +220,8 @@
     <MESSAGE value="Change JDK" />
     <MESSAGE value="Replace deprecated method" />
     <MESSAGE value="workspace.xml" />
-    <option name="LAST_COMMIT_MESSAGE" value="workspace.xml" />
+    <MESSAGE value="Use JSON build output format https://github.com/stacklane-registry/jetbrains-ide/issues/4" />
+    <option name="LAST_COMMIT_MESSAGE" value="Use JSON build output format https://github.com/stacklane-registry/jetbrains-ide/issues/4" />
   </component>
   <component name="WindowStateProjectService">
     <state x="478" y="119" width="1497" height="863" key="#Project_Structure" timestamp="1581271317180">
@@ -229,43 +233,43 @@
       <screen x="0" y="23" width="2048" height="1067" />
     </state>
     <state x="823" y="266" key="#com.intellij.ide.util.MemberChooser/0.23.2048.1067@0.23.2048.1067" timestamp="1581272951045" />
-    <state x="731" y="155" width="1092" height="846" key="CommitChangelistDialog2" timestamp="1581271289452">
+    <state x="731" y="155" width="1201" height="796" key="CommitChangelistDialog2" timestamp="1581275448958">
       <screen x="0" y="23" width="2048" height="1067" />
     </state>
-    <state x="731" y="155" key="CommitChangelistDialog2/0.23.2048.1067@0.23.2048.1067" timestamp="1581271289452" />
+    <state x="731" y="155" width="1201" height="796" key="CommitChangelistDialog2/0.23.2048.1067@0.23.2048.1067" timestamp="1581275448958" />
     <state x="731" y="155" width="1092" height="846" key="CommitChangelistDialog2/0.23.2048.1068@0.23.2048.1068" timestamp="1581256897452" />
     <state x="329" y="115" key="DiffContextDialog" timestamp="1581256932661">
       <screen x="0" y="23" width="2048" height="1068" />
     </state>
     <state x="329" y="115" key="DiffContextDialog/0.23.2048.1068@0.23.2048.1068" timestamp="1581256932661" />
-    <state width="1722" height="291" key="GridCell.Tab.0.bottom" timestamp="1581275344379">
+    <state width="1722" height="291" key="GridCell.Tab.0.bottom" timestamp="1581277855489">
       <screen x="0" y="23" width="2048" height="1068" />
     </state>
-    <state width="1722" height="291" key="GridCell.Tab.0.bottom/0.23.2048.1067@0.23.2048.1067" timestamp="1581275115485" />
-    <state width="1722" height="291" key="GridCell.Tab.0.bottom/0.23.2048.1068@0.23.2048.1068" timestamp="1581275344379" />
-    <state width="1722" height="291" key="GridCell.Tab.0.center" timestamp="1581275344379">
+    <state width="1722" height="291" key="GridCell.Tab.0.bottom/0.23.2048.1067@0.23.2048.1067" timestamp="1581277111709" />
+    <state width="1722" height="291" key="GridCell.Tab.0.bottom/0.23.2048.1068@0.23.2048.1068" timestamp="1581277855489" />
+    <state width="1722" height="291" key="GridCell.Tab.0.center" timestamp="1581277855489">
       <screen x="0" y="23" width="2048" height="1068" />
     </state>
-    <state width="1722" height="291" key="GridCell.Tab.0.center/0.23.2048.1067@0.23.2048.1067" timestamp="1581275115484" />
-    <state width="1722" height="291" key="GridCell.Tab.0.center/0.23.2048.1068@0.23.2048.1068" timestamp="1581275344379" />
-    <state width="1722" height="291" key="GridCell.Tab.0.left" timestamp="1581275344379">
+    <state width="1722" height="291" key="GridCell.Tab.0.center/0.23.2048.1067@0.23.2048.1067" timestamp="1581277111709" />
+    <state width="1722" height="291" key="GridCell.Tab.0.center/0.23.2048.1068@0.23.2048.1068" timestamp="1581277855489" />
+    <state width="1722" height="291" key="GridCell.Tab.0.left" timestamp="1581277855488">
       <screen x="0" y="23" width="2048" height="1068" />
     </state>
-    <state width="1722" height="291" key="GridCell.Tab.0.left/0.23.2048.1067@0.23.2048.1067" timestamp="1581275115483" />
-    <state width="1722" height="291" key="GridCell.Tab.0.left/0.23.2048.1068@0.23.2048.1068" timestamp="1581275344379" />
-    <state width="1722" height="291" key="GridCell.Tab.0.right" timestamp="1581275344379">
+    <state width="1722" height="291" key="GridCell.Tab.0.left/0.23.2048.1067@0.23.2048.1067" timestamp="1581277111708" />
+    <state width="1722" height="291" key="GridCell.Tab.0.left/0.23.2048.1068@0.23.2048.1068" timestamp="1581277855488" />
+    <state width="1722" height="291" key="GridCell.Tab.0.right" timestamp="1581277855489">
       <screen x="0" y="23" width="2048" height="1068" />
     </state>
-    <state width="1722" height="291" key="GridCell.Tab.0.right/0.23.2048.1067@0.23.2048.1067" timestamp="1581275115484" />
-    <state width="1722" height="291" key="GridCell.Tab.0.right/0.23.2048.1068@0.23.2048.1068" timestamp="1581275344379" />
+    <state width="1722" height="291" key="GridCell.Tab.0.right/0.23.2048.1067@0.23.2048.1067" timestamp="1581277111709" />
+    <state width="1722" height="291" key="GridCell.Tab.0.right/0.23.2048.1068@0.23.2048.1068" timestamp="1581277855489" />
     <state x="914" y="271" key="RollbackChangesDialog" timestamp="1581257003914">
       <screen x="0" y="23" width="2048" height="1068" />
     </state>
     <state x="914" y="271" key="RollbackChangesDialog/0.23.2048.1068@0.23.2048.1068" timestamp="1581257003914" />
-    <state x="610" y="298" key="Vcs.Push.Dialog.v2" timestamp="1581270879242">
+    <state x="610" y="298" key="Vcs.Push.Dialog.v2" timestamp="1581275451153">
       <screen x="0" y="23" width="2048" height="1067" />
     </state>
-    <state x="610" y="298" key="Vcs.Push.Dialog.v2/0.23.2048.1067@0.23.2048.1067" timestamp="1581270879242" />
+    <state x="610" y="298" key="Vcs.Push.Dialog.v2/0.23.2048.1067@0.23.2048.1067" timestamp="1581275451153" />
     <state x="665" y="356" key="git4idea.merge.GitPullDialog" timestamp="1581269736329">
       <screen x="0" y="23" width="2048" height="1067" />
     </state>
