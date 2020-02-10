@@ -84,7 +84,7 @@ public class SLRunConfig extends LocatableConfigurationBase {
      */
     @Nullable
     @Override
-    public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment executionEnvironment) throws ExecutionException {
+    public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment executionEnvironment) {
         Optional<Json> json = Optional.empty();
 
         if (buildProps != null && !buildProps.isEmpty()){
@@ -92,7 +92,8 @@ public class SLRunConfig extends LocatableConfigurationBase {
                 Json read = Json.read(buildProps);
                 json = Optional.of(read);
             } catch (Throwable t){
-                throw new ExecutionException("Invalid JSON build properties.");
+                return null;
+                //throw new ExecutionException("Invalid JSON build properties.");
             }
         }
 
