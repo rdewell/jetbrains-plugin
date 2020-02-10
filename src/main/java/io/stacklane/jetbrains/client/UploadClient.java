@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project;
 import io.stacklane.jetbrains.output.BuildOutputConsole;
 import io.stacklane.jetbrains.output.BuildOutputEntry;
 import io.stacklane.jetbrains.output.BuildOutputEntryType;
+import io.stacklane.jetbrains.util.VfsLookup;
 import mjson.Json;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpResponse;
@@ -43,7 +44,7 @@ public class UploadClient {
 
     public static UploadClient anon(Project project){
         /**
-         * TODO we should be using {@link VirtualFile} instead  -- see {@link io.stacklane.jetbrains.VFSUtil}
+         * TODO we should be using {@link VirtualFile} instead  -- see {@link VfsLookup}
          */
         final Path projectPath = new File(project.getBasePath()).toPath();
 

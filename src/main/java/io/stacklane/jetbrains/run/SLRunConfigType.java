@@ -1,8 +1,8 @@
-package io.stacklane.jetbrains;
+package io.stacklane.jetbrains.run;
 
 import com.intellij.execution.configurations.ConfigurationTypeBase;
 import com.intellij.openapi.project.DumbAware;
-import com.intellij.openapi.util.IconLoader;
+import io.stacklane.jetbrains.SLPlugin;
 
 /**
  * REF
@@ -12,7 +12,7 @@ import com.intellij.openapi.util.IconLoader;
 public class SLRunConfigType extends ConfigurationTypeBase implements DumbAware {
 
     public SLRunConfigType() {
-        super(SLPluginUtil.SL, SLPluginUtil.SL, SLPluginUtil.SL_RUNNER, SLPluginUtil.getIcon());
+        super(SLPlugin.SL, SLPlugin.SL, SLPlugin.SL_RUNNER, SLPlugin.getIcon());
 
         addFactory(new SLRunConfigFactory(this));
     }

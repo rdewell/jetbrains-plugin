@@ -1,4 +1,4 @@
-package io.stacklane.jetbrains;
+package io.stacklane.jetbrains.run;
 
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.process.ProcessHandler;
@@ -8,16 +8,14 @@ import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
+import io.stacklane.jetbrains.SLPlugin;
 import io.stacklane.jetbrains.client.UploadClient;
-import io.stacklane.jetbrains.client.UploadClientSettings;
 import io.stacklane.jetbrains.output.BuildOutputConsoleView;
 import mjson.Json;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.io.OutputStream;
 import java.net.URI;
-import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -88,10 +86,10 @@ public class SLRunProcessHandler extends ProcessHandler {
                     return;
                 }
 
-                final Optional<String> manifestName = SLPluginUtil.readManifestName(project);
+                final Optional<String> manifestName = SLPlugin.readManifestName(project);
 
                 if (!manifestName.isPresent()){
-                    cv.print("A manifest file (" + UploadClientSettings.MANIFEST_FILE_NAME + ") " +
+                    cv.print("A manifest file (" + SLPlugin.MANIFEST_FILE_NAME + ") " +
                                     "is required, and it must have the 'name' attribute.",
                             ConsoleViewContentType.ERROR_OUTPUT);
                     notifyTerminated();

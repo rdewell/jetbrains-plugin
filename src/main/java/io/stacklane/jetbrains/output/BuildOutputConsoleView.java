@@ -7,7 +7,7 @@ import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import io.stacklane.jetbrains.VFSUtil;
+import io.stacklane.jetbrains.util.VfsLookup;
 
 /**
  * Adapts {@link ConsoleView}
@@ -72,7 +72,7 @@ public class BuildOutputConsoleView implements BuildOutputConsole {
                  */
 
                 if (entry.getFilePath() != null){
-                    final VirtualFile found = VFSUtil.find(project, entry.getFilePath());
+                    final VirtualFile found = VfsLookup.find(project, entry.getFilePath());
 
                     if (found != null){
                         /**

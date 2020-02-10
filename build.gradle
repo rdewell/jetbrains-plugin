@@ -7,11 +7,16 @@ plugins {
 // Note: final dist is concat of settings.grade/rootProject.name and version below
 
 group 'com.stacklane'
-version '1.0.6' // see plugin.xml
+version '1.0.7' // patches plugin.xml too
 sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
+}
+
+patchPluginXml {
+    sinceBuild '192'
+    untilBuild ''
 }
 
 dependencies {
@@ -19,6 +24,7 @@ dependencies {
 }
 
 intellij {
-    type = 'IU'
+    type 'IC' // community edition (or anything higher)
+    version '192.7142.36' // baseIntelliJPlatformVersion
     pluginName 'Stacklane'
 }

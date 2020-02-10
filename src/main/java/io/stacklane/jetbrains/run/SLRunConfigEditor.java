@@ -1,4 +1,4 @@
-package io.stacklane.jetbrains;
+package io.stacklane.jetbrains.run;
 
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SettingsEditor;

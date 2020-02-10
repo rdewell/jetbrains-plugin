@@ -1,6 +1,8 @@
 package io.stacklane.jetbrains.client;
 
 
+import io.stacklane.jetbrains.SLPlugin;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -60,13 +62,13 @@ final class UploadUtil {
 
                     try {
                         count.getAndIncrement();
-                        if (count.get() > UploadClientSettings.MAX_FILES){
-                            io.set(new IOException("Exceeded maximum project files (" + UploadClientSettings.MAX_FILES + " files)"));
+                        if (count.get() > SLPlugin.MAX_FILES){
+                            io.set(new IOException("Exceeded maximum project files (" + SLPlugin.MAX_FILES + " files)"));
                             return;
                         }
                         bytes.getAndAdd(path.toFile().length());
-                        if (bytes.get() > UploadClientSettings.MAX_BYTES){
-                            io.set(new IOException("Exceeded maximum project size (" + UploadClientSettings.MAX_BYTES + " bytes)"));
+                        if (bytes.get() > SLPlugin.MAX_BYTES){
+                            io.set(new IOException("Exceeded maximum project size (" + SLPlugin.MAX_BYTES + " bytes)"));
                             return;
                         }
                         zs.putNextEntry(zipEntry);

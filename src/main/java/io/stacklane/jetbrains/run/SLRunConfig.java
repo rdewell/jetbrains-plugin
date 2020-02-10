@@ -1,4 +1,4 @@
-package io.stacklane.jetbrains;
+package io.stacklane.jetbrains.run;
 
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
@@ -9,6 +9,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizer;
 import com.intellij.openapi.util.WriteExternalException;
+import io.stacklane.jetbrains.SLPlugin;
 import mjson.Json;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
@@ -63,7 +64,7 @@ public class SLRunConfig extends LocatableConfigurationBase {
 
     @NotNull
     private String generateName(){
-        return SLPluginUtil.readManifestName(this.getProject()).orElse(UNNAMED);
+        return SLPlugin.readManifestName(getProject()).orElse(UNNAMED);
     }
 
     @NotNull
@@ -122,16 +123,14 @@ public class SLRunConfig extends LocatableConfigurationBase {
         writeString(element, "buildProps", buildProps == null ? "" : buildProps);
     }
 
-    //public boolean isCustomConfig() {
-     //   return UNNAMED.equals(getName()) || !getName().equals(suggestedName()) || !isGeneratedName() || buildProps != null;
-    //}
-
     private static String readString(@NotNull Element element, @NotNull String key, @NotNull String defaultValue) {
+        // Says use XmlSerializer now
         String value = JDOMExternalizer.readString(element, key);
         return value != null ? value : defaultValue;
     }
 
     private static void writeString(@NotNull Element element, @NotNull String key, @NotNull String value) {
+        // Says use XmlSerializer now
         JDOMExternalizer.write(element, key, value);
     }
 

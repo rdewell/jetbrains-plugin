@@ -1,9 +1,13 @@
-package io.stacklane.jetbrains;
+package io.stacklane.jetbrains.run;
 
 import com.intellij.execution.actions.ConfigurationContext;
-import com.intellij.execution.actions.RunConfigurationProducer;
+import com.intellij.execution.actions.LazyRunConfigurationProducer;
+import com.intellij.execution.configurations.ConfigurationFactory;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.Ref;
 import com.intellij.psi.PsiElement;
+import io.stacklane.jetbrains.SLPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
@@ -12,18 +16,26 @@ import java.util.Optional;
  *
  * http://www.jetbrains.org/intellij/sdk/docs/basics/run_configurations/run_configuration_management.html#creating-configurations-from-context
  */
-public class SLRunConfigProducer extends RunConfigurationProducer<SLRunConfig> {
+public class SLRunConfigProducer extends LazyRunConfigurationProducer<SLRunConfig> {
 
     protected SLRunConfigProducer() {
-        super(new SLRunConfigFactory(new SLRunConfigType()));
+        super();
+    }
+
+    private static boolean isRunAvailable(Module module){
+        // Preferred
+        //if (SLModuleType.isType(module)) return true;
+
+        // Fallback
+        final Optional<String> readName = SLPlugin.readManifestName(module);
+        if (readName.isPresent()) return true;
+
+        return false;
     }
 
     @Override
     protected boolean setupConfigurationFromContext(SLRunConfig slRunConfig, ConfigurationContext configurationContext, Ref<PsiElement> ref) {
-        final Optional<String> readName = SLPluginUtil.readManifestName(configurationContext.getProject());
-
-        // If no manifest name can be read, then we don't consider it automatically configurable.
-        if (!readName.isPresent()) return false;
+        if (!isRunAvailable(configurationContext.getModule())) return false;
 
         /**
          * REF
@@ -44,10 +56,17 @@ public class SLRunConfigProducer extends RunConfigurationProducer<SLRunConfig> {
      */
     @Override
     public boolean isConfigurationFromContext(SLRunConfig slRunConfig, ConfigurationContext configurationContext) {
-        if (slRunConfig.getBuildProps() != null && !slRunConfig.getBuildProps().isEmpty()){
+        if (slRunConfig.getBuildProps() != null &&
+            !slRunConfig.getBuildProps().isEmpty()){
             return false;
         }
 
         return true;
+    }
+
+    @NotNull
+    @Override
+    public ConfigurationFactory getConfigurationFactory() {
+        return new SLRunConfigFactory(new SLRunConfigType());
     }
 }

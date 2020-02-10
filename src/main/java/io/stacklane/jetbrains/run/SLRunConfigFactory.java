@@ -1,9 +1,10 @@
-package io.stacklane.jetbrains;
+package io.stacklane.jetbrains.run;
 
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.execution.configurations.RunConfigurationSingletonPolicy;
 import com.intellij.openapi.project.Project;
+import io.stacklane.jetbrains.SLPlugin;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -18,7 +19,7 @@ class SLRunConfigFactory extends ConfigurationFactory {
     @NotNull
     @Override
     public RunConfiguration createTemplateConfiguration(@NotNull Project project) {
-        return new SLRunConfig(project, this, SLPluginUtil.SL_RUNNER);
+        return new SLRunConfig(project, this, SLPlugin.SL_RUNNER);
     }
 
     /**
