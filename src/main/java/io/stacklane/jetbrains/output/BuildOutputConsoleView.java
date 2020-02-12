@@ -30,7 +30,9 @@ public class BuildOutputConsoleView implements BuildOutputConsole {
                 break;
             }
             case GROUP_BEGIN:{
-                cv.print(entry.getMessage() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
+                if (entry.getMessage() != null) {
+                    cv.print(entry.getMessage() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
+                }
                 break;
             }
             case GROUP_END:{

@@ -8,7 +8,7 @@ import java.net.URI;
  *
  */
 public class BuildOutputEntry {
-    private final BuildOutputEntryType type;
+    private BuildOutputEntryType type;
     private String message;
     private URI result;
     private String filePath;
@@ -42,7 +42,12 @@ public class BuildOutputEntry {
         if (json.has("file")) filePath = json.at("file").asString();
 
         if (type == BuildOutputEntryType.RESULT){
-            result = URI.create(json.at("url").asString());
+            if (json.has("url")) {
+                result = URI.create(json.at("url").asString());
+            } else {
+                type = BuildOutputEntryType.ERROR;
+                message = "No result";
+            }
         }
     }
 
